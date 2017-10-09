@@ -1,0 +1,16 @@
+{
+  "name": "mymicds-alexa-skill",
+  "version": "1.0.0",
+  "description": "Alexa skill for MyMICDS",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Clifford <nick@nickclifford.me>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/alexa-sdk": "^1.0.10",
+    "alexa-sdk": "^1.0.14",
+    "typescript": "^2.5.3"
+  }
+}
