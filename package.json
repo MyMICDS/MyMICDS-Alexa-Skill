@@ -5,15 +5,26 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "tslint src/**/*.ts"
+    "build:watch": "tsc -w",
+    "test": "tslint --type-check --project tsconfig.json src/**/*.ts"
   },
-  "author": "Nick Clifford <nick@nickclifford.me>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MyMICDS/MyMICDS-Alexa-Skill"
+  },
+  "author": {
+    "name": "Nick Clifford",
+    "email": "nick@nickclifford.me",
+    "url": "https://nickclifford.me/"
+  },
   "license": "MIT",
   "dependencies": {
-    "alexa-sdk": "^1.0.14"
+    "alexa-sdk": "^1.0.14",
+    "request": "^2.83.0"
   },
   "devDependencies": {
     "@types/alexa-sdk": "^1.0.10",
+    "@types/request": "^2.0.4",
     "tslint": "^5.7.0",
     "typescript": "^2.5.3"
   }

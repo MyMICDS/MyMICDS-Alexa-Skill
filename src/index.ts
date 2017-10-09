@@ -1,2 +1,34 @@
 import * as Alexa from 'alexa-sdk';
-// TODO: the rest of it lmao
+import { postToEndpoint } from './utils';
+
+// tslint:disable-next-line no-unused-variable
+export function handler(event: Alexa.RequestBody<Alexa.Request>, context: Alexa.Context, callback: () => void) {
+	const alexa = Alexa.handler(event, context);
+	alexa.resources = {};
+	alexa.registerHandlers(handlers);
+	alexa.execute();
+}
+
+const handlers: Alexa.Handlers<Alexa.Request> = {
+	// usually I wouldn't quote these, but the Amazon intents have periods, and we gotta stay consistent
+	'LaunchRequest'() {
+		this.emit('MyMICDSGetLunchIntent');
+	},
+	'MyMICDSGetLunchIntent'() {
+		this.emit(':tell', 'to do: finish this');
+	},
+	'AMAZON.HelpIntent'() {
+		this.emit(
+			':ask',
+			'For now, all I can do is get the lunch. Try asking me "Alexa, ask MyMICDS what\'s for lunch today."',
+			'What can I help you with?'
+		);
+	},
+	// I don't personally like the goodbye message, so we're just not going to have one
+	'AMAZON.StopIntent'() {
+		this.emit(':responseReady');
+	},
+	'AMAZON.CancelIntent'() {
+		this.emit(':responseReady');
+	}
+};
