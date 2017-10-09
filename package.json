@@ -4,13 +4,17 @@
   "description": "Alexa skill for MyMICDS",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "tslint src/**/*.ts"
   },
   "author": "Nick Clifford <nick@nickclifford.me>",
   "license": "MIT",
   "dependencies": {
+    "alexa-sdk": "^1.0.14"
+  },
+  "devDependencies": {
     "@types/alexa-sdk": "^1.0.10",
-    "alexa-sdk": "^1.0.14",
+    "tslint": "^5.7.0",
     "typescript": "^2.5.3"
   }
 }
