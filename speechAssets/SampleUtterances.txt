@@ -1,6 +1,0 @@
-MyMICDSGetLunchIntent whats for lunch {date}
-MyMICDSGetLunchIntent whats for lunch on {date}
-MyMICDSGetLunchIntent whats lunch {date}
-MyMICDSGetLunchIntent whats lunch on {date}
-MyMICDSGetLunchIntent what lunch is {date}
-MyMICDSGetLunchIntent what lunch is on {date}

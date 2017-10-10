@@ -15,12 +15,13 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		this.emit('MyMICDSGetLunchIntent');
 	},
 	'MyMICDSGetLunchIntent'() {
-		this.emit(':tell', 'to do: finish this');
+		const intent = (this.event.request as Alexa.IntentRequest).intent;
+		this.emit(':tell', intent ? JSON.stringify(intent.slots) : 'test');
 	},
 	'AMAZON.HelpIntent'() {
 		this.emit(
 			':ask',
-			'For now, all I can do is get the lunch. Try asking me "Alexa, ask MyMICDS what\'s for lunch today."',
+			'I can get the lunch and day rotation. Try asking me "Alexa, ask MyMICDS what\'s for lunch today."',
 			'What can I help you with?'
 		);
 	},
@@ -30,5 +31,8 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 	},
 	'AMAZON.CancelIntent'() {
 		this.emit(':responseReady');
+	},
+	'Unhandled'() {
+		this.emit(':tell', 'Sorry, I don\'t understand.');
 	}
 };
