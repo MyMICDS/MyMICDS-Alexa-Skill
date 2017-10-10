@@ -9,6 +9,7 @@
 		"indent": [true, "tabs"],
 		"interface-name": [true, "never-prefix"],
 		"max-classes-per-file": false,
+		"max-line-length": 140,
 		"member-access": [true, "no-public"],
 		"member-ordering": [true, "fields-first"],
 		"no-inferrable-types": true,
