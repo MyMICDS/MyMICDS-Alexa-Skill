@@ -20,18 +20,20 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		// however, it would be undefined if we were to send a LaunchRequest
 
 		const slots  = (this.event.request as Alexa.IntentRequest).intent!.slots;
-		const date = moment(slots.date.value);
+		const date   = moment(slots.date.value);
 		const school = slots.school.value || 'Upper School';
-		const lunch = (await postToEndpoint('/lunch/get', {
+		const lunch  = (await postToEndpoint('/lunch/get', {
 			year: date.year(),
 			month: date.month() + 1,
 			day: date.date()
 		})).lunch;
 
-		if (Object.keys(lunch).length === 0) {
+		const dateLunch = lunch[date.format('YYYY-MM-DD')];
+
+		if (Object.keys(lunch).length === 0 || typeof dateLunch === 'undefined') {
 			this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
 		} else {
-			const schoolLunch = lunch[date.format('YYYY-MM-DD')][school.toLowerCase().replace(/ /g, '')];
+			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '')];
 			this.emit(':tell', (schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']).join(', '));
 		}
 	},
