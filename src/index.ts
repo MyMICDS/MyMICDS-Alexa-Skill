@@ -37,6 +37,19 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 			this.emit(':tell', (schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']).join(', '));
 		}
 	},
+	async 'MyMICDSGetDayIntent'() {
+		const days = (await postToEndpoint('/portal/day-rotation')).days;
+
+		if (Object.keys(days).length === 0) {
+			this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
+		} else {
+			const date = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
+			this.emit(
+				':tell',
+				'Day ' + days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()]
+			);
+		}
+	},
 	'Unhandled'() {
 		this.emit(':tell', 'Sorry, I don\'t understand.');
 	},
