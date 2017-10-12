@@ -15,12 +15,17 @@
 		{
 			"name": "MyMICDSGetDayIntent",
 			"samples": [
+				"what's the day",
+				"what's the day {date}",
+				"what's the day on {date}",
+				"what day is it",
 				"what day is {date}",
 				"what day is it {date}",
-				"what day is it",
+				"what day is it on {date}",
 				"which day is it",
+				"which day is {date}",
 				"which day is it {date}",
-				"which day is {date}"
+				"which day is it on {date}"
 			],
 			"slots": [
 				{
