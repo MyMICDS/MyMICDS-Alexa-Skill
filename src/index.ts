@@ -1,6 +1,6 @@
 import * as Alexa from 'alexa-sdk';
 import * as moment from 'moment';
-import { postToEndpoint } from './utils';
+import { arrToReadableList, postToEndpoint } from './utils';
 
 // tslint:disable-next-line no-unused-variable
 export function handler(event: Alexa.RequestBody<Alexa.Request>, context: Alexa.Context, callback: () => void) {
@@ -34,7 +34,8 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 			this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
 		} else {
 			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '')];
-			this.emit(':tell', (schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']).join(', '));
+			const lunchList   = arrToReadableList(schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']);
+			this.emit(':tell', `The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${lunchList}.`);
 		}
 	},
 	async 'MyMICDSGetDayIntent'() {
@@ -44,10 +45,8 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 			this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
 		} else {
 			const date = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
-			this.emit(
-				':tell',
-				'Day ' + days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()]
-			);
+			const day  = days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()]
+			this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
 		}
 	},
 	'Unhandled'() {
@@ -62,11 +61,10 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 			'What can I help you with?'
 		);
 	},
-	// I don't personally like the goodbye message, so we're just not going to have one
 	'AMAZON.StopIntent'() {
-		this.emit(':responseReady');
+		this.emit(':tell', 'Goodbye!');
 	},
 	'AMAZON.CancelIntent'() {
-		this.emit(':responseReady');
+		this.emit(':tell', 'Goodbye!');
 	}
 };
