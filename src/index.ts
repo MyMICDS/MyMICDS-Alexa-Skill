@@ -45,11 +45,14 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		if (Object.keys(days).length === 0) {
 			this.emit(':tell', 'Sorry, I\'m not able to get the day rotation right now.');
 		} else {
-			const date = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
-			const day  = days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()];
+			const date  = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
+			// undefined handling
+			const year  = days[date.year().toString()] || {};
+			const month = year[(date.month() + 1).toString()] || {};
+			const day   = month[date.date().toString()];
 
 			if (typeof day === 'undefined') {
-				this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
+				this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
 			} else {
 				this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
 			}
