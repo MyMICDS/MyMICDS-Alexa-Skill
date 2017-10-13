@@ -25,7 +25,13 @@
 				"which day is it",
 				"which day is {date}",
 				"which day is it {date}",
-				"which day is it on {date}"
+				"which day is it on {date}",
+				"what day it is",
+				"what day it is {date}",
+				"what day it is on {date}",
+				"which day it is",
+				"which day it is {date}",
+				"which day it is on {date}"
 			],
 			"slots": [
 				{

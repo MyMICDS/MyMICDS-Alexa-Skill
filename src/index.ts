@@ -43,11 +43,16 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		const days = (await postToEndpoint('/portal/day-rotation')).days;
 
 		if (Object.keys(days).length === 0) {
-			this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
+			this.emit(':tell', 'Sorry, I\'m not able to get the day rotation right now.');
 		} else {
 			const date = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
 			const day  = days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()];
-			this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
+
+			if (typeof day === 'undefined') {
+				this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
+			} else {
+				this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
+			}
 		}
 	},
 	'Unhandled'() {
