@@ -1,5 +1,6 @@
 import * as Alexa from 'alexa-sdk';
 import * as moment from 'moment';
+import * as sanitizeHTML from 'sanitize-html';
 import { arrToReadableList, postToEndpoint } from './utils';
 
 // tslint:disable-next-line no-unused-variable
@@ -35,7 +36,7 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		} else {
 			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '')];
 			const lunchList   = arrToReadableList(schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']);
-			this.emit(':tell', `The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${lunchList}.`);
+			this.emit(':tell', `The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${sanitizeHTML(lunchList)}.`);
 		}
 	},
 	async 'MyMICDSGetDayIntent'() {
@@ -45,7 +46,7 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 			this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
 		} else {
 			const date = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
-			const day  = days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()]
+			const day  = days[date.year().toString()][(date.month() + 1).toString()][date.date().toString()];
 			this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
 		}
 	},
@@ -57,7 +58,7 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 	'AMAZON.HelpIntent'() {
 		this.emit(
 			':ask',
-			'I can get the lunch and day rotation. Try asking me "Alexa, ask MyMICDS what\'s for lunch today."',
+			'I can get the lunch and day rotation. Try asking me what\'s for lunch today.',
 			'What can I help you with?'
 		);
 	},

@@ -21,11 +21,13 @@
   "dependencies": {
     "alexa-sdk": "^1.0.14",
     "moment": "^2.19.0",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "sanitize-html": "^1.14.1"
   },
   "devDependencies": {
     "@types/alexa-sdk": "^1.0.10",
     "@types/request": "^2.0.4",
+    "@types/sanitize-html": "^1.14.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.3"
   }
