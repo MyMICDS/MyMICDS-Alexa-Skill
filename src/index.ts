@@ -1,6 +1,8 @@
 import * as Alexa from 'alexa-sdk';
 import * as moment from 'moment';
 import * as sanitizeHTML from 'sanitize-html';
+
+import { APIDayRotation, APILunch, School } from './types';
 import { arrToReadableList, postToEndpoint } from './utils';
 
 // tslint:disable-next-line no-unused-variable
@@ -23,7 +25,7 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		const slots  = (this.event.request as Alexa.IntentRequest).intent!.slots;
 		const date   = moment(slots.date.value);
 		const school = slots.school.value || 'Upper School';
-		const lunch  = (await postToEndpoint('/lunch/get', {
+		const lunch  = (await postToEndpoint<APILunch>('/lunch/get', {
 			year: date.year(),
 			month: date.month() + 1,
 			day: date.date()
@@ -34,13 +36,13 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		if (Object.keys(lunch).length === 0 || typeof dateLunch === 'undefined') {
 			this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
 		} else {
-			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '')];
+			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '') as School];
 			const lunchList   = arrToReadableList(schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']);
 			this.emit(':tell', `The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${sanitizeHTML(lunchList)}.`);
 		}
 	},
 	async 'MyMICDSGetDayIntent'() {
-		const days = (await postToEndpoint('/portal/day-rotation')).days;
+		const days = (await postToEndpoint<APIDayRotation>('/portal/day-rotation')).days;
 
 		if (Object.keys(days).length === 0) {
 			this.emit(':tell', 'Sorry, I\'m not able to get the day rotation right now.');
