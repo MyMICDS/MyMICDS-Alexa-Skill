@@ -9,7 +9,7 @@ export interface DayRotation {
 		}
 	};
 }
-export interface APIDayRotation { days: DayRotation; }
+export interface APIDayRotation extends APIResponseBase { days: DayRotation; }
 
 export type School = 'lowerschool' | 'middleschool' | 'upperschool';
 export interface SchoolLunch {
@@ -18,7 +18,7 @@ export interface SchoolLunch {
 		[category: string]: string[]
 	};
 }
-export interface APILunch {
+export interface APILunch extends APIResponseBase {
 	lunch: {
 		[date: string]: Record<School, SchoolLunch>
 	};

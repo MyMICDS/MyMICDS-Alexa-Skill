@@ -2,7 +2,7 @@ import * as request from 'request';
 import { APIResponseBase } from './types';
 
 // fancy intersection types
-export function postToEndpoint<T extends object>(endpoint: string, data?: object): Promise<T & APIResponseBase> {
+export function postToEndpoint<T extends APIResponseBase>(endpoint: string, data?: object): Promise<T> {
 	return new Promise((resolve, reject) => {
 		request.post({
 			url: 'https://api.mymicds.net' + endpoint,
