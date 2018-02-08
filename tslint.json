@@ -1,24 +1,3 @@
 {
-	"defaultSeverity": "error",
-	"extends": [
-		"tslint:recommended"
-	],
-	"jsRules": {},
-	"rules": {
-		"arrow-parens": [true, "ban-single-arg-parens"],
-		"indent": [true, "tabs"],
-		"interface-name": [true, "never-prefix"],
-		"max-classes-per-file": false,
-		"max-line-length": 140,
-		"member-access": [true, "no-public"],
-		"member-ordering": [true, "fields-first"],
-		"no-inferrable-types": true,
-		"no-unused-variable": true,
-		"object-literal-sort-keys": false,
-		"quotemark": [true, "single", "avoid-escape"],
-		"semicolon": [true, "always"],
-		"trailing-comma": [true, { "multiline": "never", "singleline": "never" }],
-		"variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
-	},
-	"rulesDirectory": []
+	"extends": "@mymicds/configs/tslint"
 }

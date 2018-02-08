@@ -38,7 +38,10 @@ const handlers: Alexa.Handlers<Alexa.Request> = {
 		} else {
 			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '') as School];
 			const lunchList   = arrToReadableList(schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']);
-			this.emit(':tell', `The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${sanitizeHTML(lunchList)}.`);
+			this.emit(
+				':tell',
+				`The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${sanitizeHTML(lunchList)}.`
+			);
 		}
 	},
 	async 'MyMICDSGetDayIntent'() {

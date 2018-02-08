@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "test": "tslint --type-check --project tsconfig.json src/**/*.ts"
+    "lint": "tslint --type-check --project tsconfig.json src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "sanitize-html": "^1.14.1"
   },
   "devDependencies": {
+    "@mymicds/configs": "^1.0.0",
     "@types/alexa-sdk": "^1.0.10",
     "@types/request": "^2.0.4",
     "@types/sanitize-html": "^1.14.0",
