@@ -1,84 +1,170 @@
-import * as Alexa from 'alexa-sdk';
-import * as moment from 'moment';
-import * as sanitizeHTML from 'sanitize-html';
+import { MyMICDS, School } from '@mymicds/sdk';
+import { ErrorHandler, RequestHandler, SkillBuilders } from 'ask-sdk-core';
+import { IntentRequest } from 'ask-sdk-model';
+import { arrToReadableList } from './utils';
 
-import { APIDayRotation, APILunch, School } from './types';
-import { arrToReadableList, postToEndpoint } from './utils';
+// tslint:disable:no-empty
+const mymicds = new MyMICDS({
+	baseURL: 'https://api.mymicds.net/v3',
+	jwtGetter: () => null,
+	jwtSetter: () => {},
+	jwtClear: () => {}
+});
 
-// tslint:disable-next-line no-unused-variable
-export function handler(event: Alexa.RequestBody<Alexa.Request>, context: Alexa.Context, callback: () => void) {
-	const alexa = Alexa.handler(event, context);
-	alexa.resources = {};
-	alexa.registerHandlers(handlers);
-	alexa.execute();
-}
-
-const handlers: Alexa.Handlers<Alexa.Request> = {
-	// usually I wouldn't quote these, but the Amazon intents have periods, and we gotta stay consistent
-	'LaunchRequest'() {
-		this.emit('AMAZON.HelpIntent');
-	},
-	async 'MyMICDSGetLunchIntent'() {
-		// `intent` cannot be undefined here since we will not be sending a request without the intent
-		// however, it would be undefined if we were to send a LaunchRequest
-
-		const slots  = (this.event.request as Alexa.IntentRequest).intent!.slots;
-		const date   = moment(slots.date.value);
-		const school = slots.school.value || 'Upper School';
-		const lunch  = (await postToEndpoint<APILunch>('/lunch/get', {
-			year: date.year(),
-			month: date.month() + 1,
-			day: date.date()
-		})).lunch;
-
-		const dateLunch = lunch[date.format('YYYY-MM-DD')];
-
-		if (Object.keys(lunch).length === 0 || typeof dateLunch === 'undefined') {
-			this.emit(':tell', 'Sorry, I couldn\'t find the lunch for that date.');
-		} else {
-			const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '') as School];
-			const lunchList   = arrToReadableList(schoolLunch.categories['Main Entree'] || schoolLunch.categories['Main Dish']);
-			this.emit(
-				':tell',
-				`The lunch for <say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is ${sanitizeHTML(lunchList)}.`
-			);
-		}
-	},
-	async 'MyMICDSGetDayIntent'() {
-		const days = (await postToEndpoint<APIDayRotation>('/portal/day-rotation')).days;
-
-		if (Object.keys(days).length === 0) {
-			this.emit(':tell', 'Sorry, I\'m not able to get the day rotation right now.');
-		} else {
-			const date  = moment((this.event.request as Alexa.IntentRequest).intent!.slots.date.value);
-			// undefined handling
-			const year  = days[date.year().toString()] || {};
-			const month = year[(date.month() + 1).toString()] || {};
-			const day   = month[date.date().toString()];
-
-			if (typeof day === 'undefined') {
-				this.emit(':tell', 'Sorry, I couldn\'t find the day for that date.');
-			} else {
-				this.emit(':tell', `<say-as interpret-as="date">${date.format('YYYYMMDD')}</say-as> is a Day ${day}.`);
-			}
-		}
-	},
-	'Unhandled'() {
-		this.emit(':tell', 'Sorry, I don\'t understand.');
-	},
-
-	// special Amazon intents
-	'AMAZON.HelpIntent'() {
-		this.emit(
-			':ask',
-			'I can get the lunch and day rotation. Try asking me what\'s for lunch today.',
-			'What can I help you with?'
+const helpAndLaunchHandler: RequestHandler = {
+	canHandle(input) {
+		return (
+			input.requestEnvelope.request.type === 'LaunchRequest' ||
+			(input.requestEnvelope.request.type === 'IntentRequest' &&
+				input.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent')
 		);
 	},
-	'AMAZON.StopIntent'() {
-		this.emit(':tell', 'Goodbye!');
-	},
-	'AMAZON.CancelIntent'() {
-		this.emit(':tell', 'Goodbye!');
+	handle(input) {
+		return input.responseBuilder
+			.speak("I can get the lunch and day rotation. Try asking me what's for lunch today.")
+			.reprompt('What can I help you with?')
+			.getResponse();
 	}
 };
+
+const lunchHandler: RequestHandler = {
+	canHandle(input) {
+		return (
+			input.requestEnvelope.request.type === 'IntentRequest' &&
+			input.requestEnvelope.request.intent.name === 'MyMICDSGetLunchIntent'
+		);
+	},
+	async handle(input) {
+		const slots = (input.requestEnvelope.request as IntentRequest).intent.slots!;
+		const dateString = slots.date.value!;
+		const school = slots.school.value || 'Upper School';
+
+		const date = new Date(dateString);
+		if (isNaN(date.getTime())) {
+			throw new Error('Sorry, that date is invalid.');
+		}
+
+		const { lunch } = await mymicds.lunch
+			.get(
+				{
+					year: date.getUTCFullYear(),
+					month: date.getUTCMonth() + 1,
+					day: date.getUTCDate()
+				},
+				true
+			)
+			.toPromise();
+
+		const dateLunch = lunch[dateString];
+
+		if (typeof dateLunch === 'undefined') {
+			throw new Error("Sorry, I couldn't find the lunch for that date.");
+		}
+
+		const schoolLunch = dateLunch[school.toLowerCase().replace(/ /g, '') as School].categories;
+		const categories = Object.keys(schoolLunch);
+		const entreeCategory = categories.find(c => c.includes('Entree'));
+
+		if (categories.length === 0 || typeof entreeCategory === 'undefined') {
+			return input.responseBuilder
+				.speak("There's no lunch yet for that date.")
+				.withShouldEndSession(true)
+				.getResponse();
+		}
+
+		const lunchList = arrToReadableList(schoolLunch[entreeCategory]);
+		return input.responseBuilder
+			.speak(`The lunch for <say-as interpret-as="date">${dateString}</say-as> is ${lunchList}.`)
+			.withShouldEndSession(true)
+			.getResponse();
+	}
+};
+
+const dayRotationHandler: RequestHandler = {
+	canHandle(input) {
+		return (
+			input.requestEnvelope.request.type === 'IntentRequest' &&
+			input.requestEnvelope.request.intent.name === 'MyMICDSGetDayIntent'
+		);
+	},
+	async handle(input) {
+		const { days } = await mymicds.portal.getDayRotation(true).toPromise();
+
+		if (Object.keys(days).length === 0) {
+			throw new Error("Sorry, I'm not able to get the day rotation right now.");
+		}
+
+		const slots = (input.requestEnvelope.request as IntentRequest).intent.slots!;
+		const dateString = slots.date.value!;
+		const date = new Date(dateString);
+
+		const year = days[date.getUTCFullYear().toString()] || {};
+		const month = year[(date.getUTCMonth() + 1).toString()] || {};
+		const day = month[date.getUTCDate().toString()];
+
+		if (typeof day === 'undefined') {
+			throw new Error("Sorry, I couldn't find the day for that date.");
+		}
+
+		return input.responseBuilder
+			.speak(`<say-as interpret-as="date">${dateString}</say-as> is a Day ${day}.`)
+			.withShouldEndSession(true)
+			.getResponse();
+	}
+};
+
+const cancelAndStopHandler: RequestHandler = {
+	canHandle(input) {
+		return (
+			input.requestEnvelope.request.type === 'IntentRequest' &&
+			(input.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent' ||
+				input.requestEnvelope.request.intent.name === 'AMAZON.StopIntent')
+		);
+	},
+	handle(input) {
+		return input.responseBuilder.speak('Goodbye!').getResponse();
+	}
+};
+
+const fallbackHandler: RequestHandler = {
+	canHandle(input) {
+		return (
+			input.requestEnvelope.request.type === 'IntentRequest' &&
+			input.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent'
+		);
+	},
+	handle(input) {
+		return input.responseBuilder.speak("Sorry, I don't understand.").getResponse();
+	}
+};
+
+const sessionEndedHandler: RequestHandler = {
+	canHandle(input) {
+		return input.requestEnvelope.request.type === 'SessionEndedRequest';
+	},
+	handle(input) {
+		return input.responseBuilder.getResponse();
+	}
+};
+
+const errorHandler: ErrorHandler = {
+	canHandle() {
+		return true;
+	},
+	handle(input, error) {
+		return input.responseBuilder.speak(error.message).getResponse();
+	}
+};
+
+// noinspection JSUnusedGlobalSymbols
+export const handler = SkillBuilders.custom()
+	.addRequestHandlers(
+		helpAndLaunchHandler,
+		lunchHandler,
+		dayRotationHandler,
+		sessionEndedHandler,
+		fallbackHandler,
+		cancelAndStopHandler
+	)
+	.addErrorHandlers(errorHandler)
+	.lambda();

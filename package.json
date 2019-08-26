@@ -5,7 +5,9 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build:lambda": "npm run build && zip -r lambda.zip dist node_modules",
     "build:watch": "tsc -w",
+    "clean": "rimraf dist",
     "lint": "tslint --type-check --project tsconfig.json src/**/*.ts"
   },
   "repository": {
@@ -18,18 +20,29 @@
     "url": "https://nickclifford.me/"
   },
   "license": "MIT",
-  "dependencies": {
-    "alexa-sdk": "^1.0.14",
-    "moment": "^2.19.0",
-    "request": "^2.83.0",
-    "sanitize-html": "^1.14.1"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,sass,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "devDependencies": {
-    "@mymicds/configs": "^1.0.0",
-    "@types/alexa-sdk": "^1.0.10",
-    "@types/request": "^2.0.4",
-    "@types/sanitize-html": "^1.14.0",
-    "tslint": "^5.7.0",
-    "typescript": "^2.5.3"
+    "@mymicds/configs": "^1.1.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.4",
+    "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@mymicds/sdk": "^1.8.0",
+    "ask-sdk-core": "^2.7.0",
+    "ask-sdk-model": "^1.19.0"
   }
 }

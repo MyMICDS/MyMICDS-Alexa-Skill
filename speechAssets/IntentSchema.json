@@ -1,145 +1,149 @@
 {
-	"intents": [
-		{
-			"name": "AMAZON.CancelIntent",
-			"samples": []
-		},
-		{
-			"name": "AMAZON.HelpIntent",
-			"samples": []
-		},
-		{
-			"name": "AMAZON.StopIntent",
-			"samples": []
-		},
-		{
-			"name": "MyMICDSGetDayIntent",
-			"samples": [
-				"what's the day",
-				"what's the day {date}",
-				"what's the day on {date}",
-				"what day is it",
-				"what day is {date}",
-				"what day is it {date}",
-				"what day is it on {date}",
-				"which day is it",
-				"which day is {date}",
-				"which day is it {date}",
-				"which day is it on {date}",
-				"what day it is",
-				"what day it is {date}",
-				"what day it is on {date}",
-				"which day it is",
-				"which day it is {date}",
-				"which day it is on {date}"
-			],
-			"slots": [
+	"interactionModel": {
+		"languageModel": {
+			"invocationName": "my m. i. c. d. s.",
+			"intents": [
 				{
-					"name": "date",
-					"type": "AMAZON.DATE",
-					"samples": []
-				}
-			]
-		},
-		{
-			"name": "MyMICDSGetLunchIntent",
-			"samples": [
-				"what's for lunch {date} for {school}",
-				"what's for lunch {date} for the {school}",
-				"what's for lunch {date} in {school}",
-				"what's for lunch {date} in the {school}",
-				"what's for lunch on {date} for {school}",
-				"what's for lunch on {date} for the {school}",
-				"what's for lunch on {date} in {school}",
-				"what's for lunch on {date} in the {school}",
-				"what's lunch {date} for {school}",
-				"what's lunch {date} for the {school}",
-				"what's lunch {date} in {school}",
-				"what's lunch {date} in the {school}",
-				"what's lunch on {date} for {school}",
-				"what's lunch on {date} for the {school}",
-				"what's lunch on {date} in {school}",
-				"what's lunch on {date} in the {school}",
-				"what is lunch {date} for {school}",
-				"what is lunch {date} for the {school}",
-				"what is lunch {date} in {school}",
-				"what is lunch {date} in the {school}",
-				"what is lunch on {date} for {school}",
-				"what is lunch on {date} for the {school}",
-				"what is lunch on {date} in {school}",
-				"what is lunch on {date} in the {school}",
-				"what lunch is {date} for {school}",
-				"what lunch is {date} for the {school}",
-				"what lunch is {date} in {school}",
-				"what lunch is {date} in the {school}",
-				"what lunch is on {date} for {school}",
-				"what lunch is on {date} for the {school}",
-				"what lunch is on {date} in {school}",
-				"what lunch is on {date} in the {school}",
-				"what's for lunch for {school}",
-				"what's for lunch for the {school}",
-				"what's for lunch in {school}",
-				"what's for lunch in the {school}",
-				"what is lunch for {school}",
-				"what is lunch for the {school}",
-				"what is lunch in {school}",
-				"what is lunch in the {school}",
-				"what's lunch for {school}",
-				"what's lunch for the {school}",
-				"what's lunch in {school}",
-				"what's lunch in the {school}",
-				"what's for lunch {date}",
-				"what's for lunch on {date}",
-				"what's lunch {date}",
-				"what's lunch on {date}",
-				"what is lunch {date}",
-				"what is lunch on {date}",
-				"what lunch is {date}",
-				"what lunch is on {date}",
-				"what's for lunch",
-				"what is lunch",
-				"what's lunch"
-			],
-			"slots": [
-				{
-					"name": "date",
-					"type": "AMAZON.DATE",
+					"name": "AMAZON.CancelIntent",
 					"samples": []
 				},
 				{
-					"name": "school",
-					"type": "MICDSSchoolList",
+					"name": "AMAZON.HelpIntent",
 					"samples": []
+				},
+				{
+					"name": "AMAZON.StopIntent",
+					"samples": []
+				},
+				{
+					"name": "MyMICDSGetDayIntent",
+					"slots": [
+						{
+							"name": "date",
+							"type": "AMAZON.DATE"
+						}
+					],
+					"samples": [
+						"what's the day",
+						"what's the day {date}",
+						"what's the day on {date}",
+						"what day is it",
+						"what day is {date}",
+						"what day is it {date}",
+						"what day is it on {date}",
+						"which day is it",
+						"which day is {date}",
+						"which day is it {date}",
+						"which day is it on {date}",
+						"what day it is",
+						"what day it is {date}",
+						"what day it is on {date}",
+						"which day it is",
+						"which day it is {date}",
+						"which day it is on {date}"
+					]
+				},
+				{
+					"name": "MyMICDSGetLunchIntent",
+					"slots": [
+						{
+							"name": "date",
+							"type": "AMAZON.DATE"
+						},
+						{
+							"name": "school",
+							"type": "MICDSSchoolList"
+						}
+					],
+					"samples": [
+						"what's for lunch {date} for {school}",
+						"what's for lunch {date} for the {school}",
+						"what's for lunch {date} in {school}",
+						"what's for lunch {date} in the {school}",
+						"what's for lunch on {date} for {school}",
+						"what's for lunch on {date} for the {school}",
+						"what's for lunch on {date} in {school}",
+						"what's for lunch on {date} in the {school}",
+						"what's lunch {date} for {school}",
+						"what's lunch {date} for the {school}",
+						"what's lunch {date} in {school}",
+						"what's lunch {date} in the {school}",
+						"what's lunch on {date} for {school}",
+						"what's lunch on {date} for the {school}",
+						"what's lunch on {date} in {school}",
+						"what's lunch on {date} in the {school}",
+						"what is lunch {date} for {school}",
+						"what is lunch {date} for the {school}",
+						"what is lunch {date} in {school}",
+						"what is lunch {date} in the {school}",
+						"what is lunch on {date} for {school}",
+						"what is lunch on {date} for the {school}",
+						"what is lunch on {date} in {school}",
+						"what is lunch on {date} in the {school}",
+						"what lunch is {date} for {school}",
+						"what lunch is {date} for the {school}",
+						"what lunch is {date} in {school}",
+						"what lunch is {date} in the {school}",
+						"what lunch is on {date} for {school}",
+						"what lunch is on {date} for the {school}",
+						"what lunch is on {date} in {school}",
+						"what lunch is on {date} in the {school}",
+						"what's for lunch for {school}",
+						"what's for lunch for the {school}",
+						"what's for lunch in {school}",
+						"what's for lunch in the {school}",
+						"what is lunch for {school}",
+						"what is lunch for the {school}",
+						"what is lunch in {school}",
+						"what is lunch in the {school}",
+						"what's lunch for {school}",
+						"what's lunch for the {school}",
+						"what's lunch in {school}",
+						"what's lunch in the {school}",
+						"what's for lunch {date}",
+						"what's for lunch on {date}",
+						"what's lunch {date}",
+						"what's lunch on {date}",
+						"what is lunch {date}",
+						"what is lunch on {date}",
+						"what lunch is {date}",
+						"what lunch is on {date}",
+						"what's for lunch",
+						"what is lunch",
+						"what's lunch"
+					]
+				},
+				{
+					"name": "AMAZON.NavigateHomeIntent",
+					"samples": []
+				},
+				{
+					"name": "AMAZON.FallbackIntent",
+					"samples": []
+				}
+			],
+			"types": [
+				{
+					"name": "MICDSSchoolList",
+					"values": [
+						{
+							"name": {
+								"value": "Upper School"
+							}
+						},
+						{
+							"name": {
+								"value": "Middle School"
+							}
+						},
+						{
+							"name": {
+								"value": "Lower School"
+							}
+						}
+					]
 				}
 			]
 		}
-	],
-	"types": [
-		{
-			"name": "MICDSSchoolList",
-			"values": [
-				{
-					"id": null,
-					"name": {
-						"value": "Upper School",
-						"synonyms": []
-					}
-				},
-				{
-					"id": null,
-					"name": {
-						"value": "Middle School",
-						"synonyms": []
-					}
-				},
-				{
-					"id": null,
-					"name": {
-						"value": "Lower School",
-						"synonyms": []
-					}
-				}
-			]
-		}
-	]
+	}
 }
